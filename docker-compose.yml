@@ -1,0 +1,40 @@
+services:
+  
+  webapp_diary_local:
+    image: webapp_diary_local:1.0.0
+    container_name: webapp_diary_local
+    build:
+      context: .
+    ports:
+      - 80:80
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    networks:
+      - network_diary_local
+  
+  mysql:
+    image: mysql:8.0.32
+    container_name: mysql_diary_local
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: diary_local
+      MYSQL_USER: diary_local
+      MYSQL_PASSWORD: password
+      MYSQL_TCP_PORT: 3306
+    volumes:
+      - mysql_diary_local_data:/var/lib/mysql
+    networks:
+      - network_diary_local
+
+networks:
+  network_diary_local:
+
+volumes:
+  mysql_diary_local_data:
