@@ -33,6 +33,18 @@ services:
     networks:
       - network_diary_local
 
+  smtp:
+    platform: linux/x86_64
+    image: mailhog/mailhog
+    container_name: smtp_diary_local
+    logging:
+      driver: 'none'
+    ports:
+      - 8003:1025
+      - 8100:8025
+    networks:
+      - network_diary_local
+
 networks:
   network_diary_local:
 
