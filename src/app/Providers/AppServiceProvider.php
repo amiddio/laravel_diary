@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
+        // Added copyright to all blade templates
+        $current_year = date('Y');
+        View::share('copyright', __("&copy; Copyright :years Crocus Studio", ['years' => ($current_year == 2024 ? $current_year : "2024-{$current_year}")]));
     }
 }
