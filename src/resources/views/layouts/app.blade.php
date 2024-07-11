@@ -38,9 +38,15 @@
 {{--                </form>--}}
 
                 <div class="dropdown text-end">
-                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
-                    </a>
+                    @isset(auth()->user()->avatar)
+                        <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ Storage::url(config('custom.path.user_avatar') . '/' . auth()->user()->avatar) }}" class="img-thumbnail" width="40" />
+                        </a>
+                    @else
+                        <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ asset('images/avatar.jpg') }}" class="img-thumbnail" width="40" />
+                        </a>
+                    @endisset
                     <ul class="dropdown-menu text-small">
                         <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>

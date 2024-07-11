@@ -57,4 +57,11 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function deleteAvatar(Request $request, int $id): RedirectResponse
+    {
+        $request->user()->save();
+
+        return redirect()->route('profile.edit');
+    }
 }
