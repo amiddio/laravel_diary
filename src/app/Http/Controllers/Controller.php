@@ -9,15 +9,4 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-
-    /**
-     * @param string $status
-     * @param string $message
-     * @return void
-     */
-    protected function setAlert(string $status, string $message): void
-    {
-        request()->session()->flash('status', $status);
-        request()->session()->flash('message', $message);
-    }
 }

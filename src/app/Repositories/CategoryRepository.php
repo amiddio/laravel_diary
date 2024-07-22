@@ -47,14 +47,14 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
 
     public function activedList(): array
     {
-        $rows = Category::select(['id', 'name'])
+        $rows = Category::select(['id', 'name', 'slug'])
                           ->where('user_id', auth()->id())
                           ->where('is_active', true)
                           ->orderBy('name')
                           ->get();
 
         return Arr::mapWithKeys($rows->toArray(), function (array $item, int $key) {
-            return [$item['id'] => $item['name']];
+            return [$item['id'] => $item];
         });
     }
 

@@ -11,7 +11,14 @@
     <main class="flex-shrink-0 mb-5">
         <div class="container">
             <h1 class="h2 fw-normal mb-4">{{ $page_title }}</h1>
-            {{ $content }}
+            <div class="row">
+                <div class="col-md-4">
+                    {{ $content_left }}
+                </div>
+                <div class="col-md-8">
+                    {{ $content }}
+                </div>
+            </div>
         </div>
     </main>
 
