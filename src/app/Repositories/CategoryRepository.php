@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
-class CategoryRepository implements CreateInterface, ReadInterface, UpdateInterface, DeleteInterface
+class CategoryRepository extends BaseRepository implements CreateInterface, ReadInterface, UpdateInterface, DeleteInterface
 {
 
     /**
@@ -26,6 +26,7 @@ class CategoryRepository implements CreateInterface, ReadInterface, UpdateInterf
 
         try {
             $category = Category::create($data);
+            self::setAlert(status: 'success', message: __('Category created successfully!'));
             return $category->id;
         } catch (QueryException  $exception) {
             Log::error($exception->getMessage());
@@ -44,6 +45,19 @@ class CategoryRepository implements CreateInterface, ReadInterface, UpdateInterf
                          ->get();
     }
 
+    public function activedList(): array
+    {
+        $rows = Category::select(['id', 'name'])
+                          ->where('user_id', auth()->id())
+                          ->where('is_active', true)
+                          ->orderBy('name')
+                          ->get();
+
+        return Arr::mapWithKeys($rows->toArray(), function (array $item, int $key) {
+            return [$item['id'] => $item['name']];
+        });
+    }
+
     /**
      * @param int $id
      * @return mixed
@@ -60,18 +74,20 @@ class CategoryRepository implements CreateInterface, ReadInterface, UpdateInterf
     /**
      * @param array $data
      * @param int $id
-     * @return bool
+     * @return void
      */
-    public function update(array $data, int $id): bool
+    public function update(array $data, int $id): void
     {
-        $category = $this->find($id);
+        $category = Category::findOrFail($id);
 
         Gate::authorize('update', $category);
 
         try {
             $category->fill($data);
             $category->save();
-            return $category->wasChanged();
+            if ($category->wasChanged()) {
+                self::setAlert(status: 'success', message: __('Category edited successfully!'));
+            }
         } catch (QueryException $exception) {
             Log::error($exception->getMessage());
             abort(500);
@@ -84,12 +100,13 @@ class CategoryRepository implements CreateInterface, ReadInterface, UpdateInterf
      */
     public function delete(int $id): void
     {
-        $category = $this->find($id);
+        $category = Category::findOrFail($id);
 
         Gate::authorize('delete', $category);
 
         try {
             $category->delete();
+            self::setAlert(status: 'success', message: __('Category was deleted!'));
         } catch (QueryException $exception) {
             Log::error($exception->getMessage());
             abort(500);

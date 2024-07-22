@@ -41,9 +41,6 @@ class CategoryController extends Controller
     {
         $validated = $request->validated();
         $this->categoryRepository->create(data: $validated);
-
-        $this->setAlert(status: 'success', message: __('Category created successfully!'));
-
         return redirect()->route('categories.index');
     }
 
@@ -62,12 +59,7 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, string $id): RedirectResponse
     {
         $validated = $request->validated();
-        $was_changed = $this->categoryRepository->update($validated, $id);
-
-        if ($was_changed) {
-            $this->setAlert(status: 'success', message: __('Category edited successfully!'));
-        }
-
+        $this->categoryRepository->update($validated, $id);
         return redirect()->route('categories.index');
     }
 
@@ -77,9 +69,6 @@ class CategoryController extends Controller
     public function destroy(string $id): RedirectResponse
     {
         $this->categoryRepository->delete($id);
-
-        $this->setAlert(status: 'success', message: __('Category was deleted!'));
-
         return redirect()->route('categories.index');
     }
 

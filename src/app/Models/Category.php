@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Observers\CategoryObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
@@ -27,6 +28,11 @@ class Category extends Model
         'name',
         'is_active',
     ];
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(DiaryPost::class);
+    }
 
     /**
      * @return void
