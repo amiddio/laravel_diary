@@ -9,6 +9,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $category_id
+ * @property string $title
+ * @property string $content
+ * @property Carbon $published_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\Category|null $category
+ * @property-read mixed $intro
+ * @property-read mixed $published_at_formated
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost query()
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost wherePublishedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereUserId($value)
+ * @mixin \Eloquent
+ */
 class DiaryPost extends Model
 {
     use HasFactory;
