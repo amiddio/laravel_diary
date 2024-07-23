@@ -96,9 +96,9 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
 
     /**
      * @param int $id
-     * @return mixed
+     * @return void
      */
-    public function delete(int $id)
+    public function delete(int $id): void
     {
         $post = DiaryPost::findOrFail($id);
 

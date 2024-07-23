@@ -11,8 +11,10 @@ services:
       - ./src:/var/www/html
     depends_on:
       - mysql
+      - redis
     links:
       - mysql
+      - redis
     networks:
       - network_diary_local
   
@@ -44,6 +46,13 @@ services:
       - 8100:8025
     networks:
       - network_diary_local
+
+  redis:
+    image: redis:7.0.5-alpine
+    hostname: redis
+    networks:
+      - network_diary_local
+
 
 networks:
   network_diary_local:
