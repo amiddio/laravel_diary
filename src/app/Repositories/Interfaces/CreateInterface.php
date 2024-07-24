@@ -4,5 +4,5 @@ namespace App\Repositories\Interfaces;
 
 interface CreateInterface
 {
-    public function create(array $data);
+    public function create(array $data): int;
 }

@@ -39,7 +39,7 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
     }
 
     /**
-     * @return mixed
+     * @return Collection|LengthAwarePaginator
      */
     public function all(?string $slug = null): Collection|LengthAwarePaginator
     {
@@ -74,7 +74,7 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
     /**
      * @param array $data
      * @param int $id
-     * @return mixed
+     * @return void
      */
     public function update(array $data, int $id): void
     {

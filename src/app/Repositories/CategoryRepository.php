@@ -35,9 +35,9 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
     }
 
     /**
-     * @return Collection
+     * @return \Illuminate\Support\Collection
      */
-    public function all(): Collection
+    public function all(): \Illuminate\Support\Collection
     {
         return Category::select(['id', 'name', 'is_active'])
                          ->where('user_id', auth()->id())

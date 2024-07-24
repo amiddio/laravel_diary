@@ -19,8 +19,8 @@
                        class="nav-link px-2 {{ request()->is('diary_*', 'categories*') ? 'link-secondary' : 'link-body-emphasis' }}">{{ __('Diary') }}</a>
                 </li>
                 <li>
-                    <a href="/"
-                       class="nav-link px-2 {{ request()->is('blog') ? 'link-secondary' : 'link-body-emphasis' }}">{{ __('Blog') }}</a>
+                    <a href="{{ route('blog_posts.index') }}"
+                       class="nav-link px-2 {{ request()->is('blog_*') ? 'link-secondary' : 'link-body-emphasis' }}">{{ __('Blog') }}</a>
                 </li>
             </ul>
 
