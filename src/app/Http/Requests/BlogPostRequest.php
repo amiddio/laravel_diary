@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\BlogPost;
+use App\Models\BlogTag;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -33,6 +34,7 @@ class BlogPostRequest extends FormRequest
             'content' => ['required'],
             'published_at' => ['required', 'date_format:Y-m-d H:i:s'],
             'is_active' => ['present', 'in:0,1'],
+            'tags' => [Rule::exists(BlogTag::class, column: 'id')->where('user_id', $this->user()->id)],
         ];
     }
 

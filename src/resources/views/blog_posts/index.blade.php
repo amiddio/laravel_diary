@@ -25,7 +25,12 @@
                 @foreach($posts as $post)
                     <tr>
                         <th scope="row">{{ $post->id }}</th>
-                        <td>{{ $post->title }}</td>
+                        <td>
+                            {{ $post->title }}
+                            @if($post->tags->isNotEmpty())
+                            <div class="fs-6 fw-lighter">Tags: {{ $post->tags->implode('name', ', ') }}</div>
+                            @endif
+                        </td>
                         <td>{{ $post->published_at }}</td>
                         <td>
                             @if($post->is_active)

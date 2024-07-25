@@ -14,6 +14,9 @@
 
             <div class="card mb-3">
                 <div class="card-body">
+                    @if($post->tags->isNotEmpty())
+                    <p class="fs-6 fw-lighter">Tags: {{ $post->tags->implode('name', ', ') }}</p>
+                    @endif
                     <p class="card-text">{!! nl2br($post->intro) !!}</p>
                     <hr/>
                     <p class="card-text">{!! nl2br($post->content) !!}</p>

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Observers\BlogTagObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * 
@@ -22,6 +23,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BlogTag whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BlogTag whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BlogTag whereUserId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BlogPost> $posts
+ * @property-read int|null $posts_count
  * @mixin \Eloquent
  */
 class BlogTag extends Model
@@ -42,6 +45,11 @@ class BlogTag extends Model
         'user_id',
         'name',
     ];
+
+    public function posts(): BelongsToMany
+    {
+        return $this->belongsToMany(BlogPost::class);
+    }
 
     protected static function booted(): void
     {

@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\CreateInterface;
 use App\Repositories\Interfaces\DeleteInterface;
 use App\Repositories\Interfaces\ReadInterface;
 use App\Repositories\Interfaces\UpdateInterface;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -21,11 +22,15 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
     public function create(array $data): int
     {
         $data = Arr::set($data, 'user_id', auth()->id());
+        $tags = Arr::get($data, 'tags', []);
 
         try {
-            $tag = BlogPost::create($data);
+            $post = BlogPost::create($data);
+            if ($tags) {
+                $post->tags()->attach($tags);
+            }
             self::setAlert(status: 'success', message: __('Blog post created successfully!'));
-            return $tag->id;
+            return $post->id;
         } catch (QueryException  $exception) {
             Log::error($exception->getMessage());
             abort(500);
@@ -38,6 +43,7 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
     public function all(): Collection|LengthAwarePaginator
     {
         return BlogPost::select(['id', 'title', 'is_active', 'published_at'])
+                        ->with('tags:id,name')
                         ->owner()
                         ->latest()
                         ->paginate(self::CABINET_PER_PAGE);
@@ -45,11 +51,11 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
 
     /**
      * @param int $id
-     * @return BlogPost
+     * @return Model
      */
-    public function find(int $id): BlogPost
+    public function find(int $id): Model
     {
-        $post = BlogPost::findOrFail($id);
+        $post = BlogPost::with('tags')->findOrFail($id);
 
         Gate::authorize('view', $post);
 
@@ -67,10 +73,16 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
 
         Gate::authorize('update', $post);
 
+        $tags = Arr::get($data, 'tags', []);
+        $isTagsChanged = !($post->tags->modelKeys() == $tags);
+
         try {
             $post->fill($data);
             $post->save();
-            if ($post->wasChanged()) {
+            if ($isTagsChanged) {
+                $post->tags()->sync($tags);
+            }
+            if ($post->wasChanged() || $isTagsChanged) {
                 self::setAlert(status: 'success', message: __('Post updated successfully!'));
             }
         } catch (QueryException $exception) {

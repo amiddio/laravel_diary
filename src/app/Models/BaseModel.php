@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- *
+ * 
  *
  * @method static Builder|BaseModel active()
  * @method static Builder|BaseModel newModelQuery()
  * @method static Builder|BaseModel newQuery()
  * @method static Builder|BaseModel owner()
  * @method static Builder|BaseModel query()
+ * @property-read mixed $published_at_formated
  * @mixin \Eloquent
  */
 class BaseModel extends Model

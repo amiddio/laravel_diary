@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BlogPostRequest;
 use App\Repositories\BlogPostRepository;
+use App\Repositories\BlogTagRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -11,7 +12,8 @@ class BlogPostController extends Controller
 {
 
     public function __construct(
-        protected BlogPostRepository $blogPostRepository
+        protected BlogPostRepository $blogPostRepository,
+        protected BlogTagRepository $blogTagRepository
     ) {}
 
     /**
@@ -28,7 +30,8 @@ class BlogPostController extends Controller
      */
     public function create(): View
     {
-        return view('blog_posts.create');
+        $tags = $this->blogTagRepository->all();
+        return view('blog_posts.create', compact('tags'));
     }
 
     /**
@@ -56,7 +59,8 @@ class BlogPostController extends Controller
     public function edit(string $id): View
     {
         $post = $this->blogPostRepository->find($id);
-        return view('blog_posts.edit', compact('post'));
+        $tags = $this->blogTagRepository->all();
+        return view('blog_posts.edit', compact('post', 'tags'));
     }
 
     /**

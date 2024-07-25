@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use App\Observers\BlogPostObserver;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -18,24 +19,27 @@ use Illuminate\Support\Carbon;
  * @property string $intro
  * @property string $content
  * @property bool $is_active
- * @property \Illuminate\Support\Carbon $published_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost query()
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost whereContent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost whereIntro($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost whereIsActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost wherePublishedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BlogPost whereUserId($value)
+ * @property Carbon $published_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read mixed $published_at_formated
+ * @property-read Collection<int, BlogTag> $tags
+ * @property-read int|null $tags_count
  * @method static Builder|BlogPost active()
+ * @method static Builder|BlogPost newModelQuery()
+ * @method static Builder|BlogPost newQuery()
  * @method static Builder|BlogPost owner()
+ * @method static Builder|BlogPost query()
+ * @method static Builder|BlogPost whereContent($value)
+ * @method static Builder|BlogPost whereCreatedAt($value)
+ * @method static Builder|BlogPost whereId($value)
+ * @method static Builder|BlogPost whereIntro($value)
+ * @method static Builder|BlogPost whereIsActive($value)
+ * @method static Builder|BlogPost wherePublishedAt($value)
+ * @method static Builder|BlogPost whereSlug($value)
+ * @method static Builder|BlogPost whereTitle($value)
+ * @method static Builder|BlogPost whereUpdatedAt($value)
+ * @method static Builder|BlogPost whereUserId($value)
  * @mixin \Eloquent
  */
 class BlogPost extends BaseModel
@@ -65,6 +69,11 @@ class BlogPost extends BaseModel
         'is_active',
         'published_at',
     ];
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(BlogTag::class);
+    }
 
     /**
      * @return void

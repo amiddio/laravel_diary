@@ -62,6 +62,27 @@
                         </div>
                     </div>
 
+                    <!-- Tags -->
+                    <div class="mb-3 row">
+                        <x-input-label for="tags" class="col-sm-2 col-form-label" :value="__('Tags')" />
+                        <div class="col-sm-10">
+                            @foreach ($tags as $tag)
+                                <span>
+                                    <input type="checkbox" class="form-check-input"
+                                           name="tags[]"
+                                           value="{{ $tag->id }}"
+                                           @if ($errors->any())
+                                               @checked(collect(old('tags', []))->contains($tag->id))
+                                           @else
+                                               @checked($post->tags->contains($tag->id))
+                                           @endif
+                                    >&nbsp;{{ $tag->name }}
+                                </span>
+                            @endforeach
+                            <x-input-error :messages="$errors->get('tags')" />
+                        </div>
+                    </div>
+
                     <div class="mb-3 row">
                         <x-button-primary :value="__('Edit')" />
                     </div>
