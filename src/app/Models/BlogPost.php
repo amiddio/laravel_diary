@@ -70,6 +70,9 @@ class BlogPost extends BaseModel
         'published_at',
     ];
 
+    /**
+     * @return BelongsToMany
+     */
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(BlogTag::class);

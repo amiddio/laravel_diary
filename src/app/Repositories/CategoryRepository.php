@@ -7,9 +7,10 @@ use App\Repositories\Interfaces\CreateInterface;
 use App\Repositories\Interfaces\DeleteInterface;
 use App\Repositories\Interfaces\ReadInterface;
 use App\Repositories\Interfaces\UpdateInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Arr;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
@@ -35,21 +36,24 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
     }
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
-    public function all(): \Illuminate\Support\Collection
+    public function all(): Collection
     {
         return Category::select(['id', 'name', 'is_active'])
-                         ->where('user_id', auth()->id())
+                         ->owner()
                          ->orderBy('name')
                          ->get();
     }
 
+    /**
+     * @return array
+     */
     public function activedList(): array
     {
         $rows = Category::select(['id', 'name', 'slug'])
-                          ->where('user_id', auth()->id())
-                          ->where('is_active', true)
+                          ->owner()
+                          ->active()
                           ->orderBy('name')
                           ->get();
 
@@ -61,6 +65,7 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
     /**
      * @param int $id
      * @return mixed
+     * @throws AuthorizationException
      */
     public function find(int $id): Category
     {
@@ -75,6 +80,7 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
      * @param array $data
      * @param int $id
      * @return void
+     * @throws AuthorizationException
      */
     public function update(array $data, int $id): void
     {
@@ -97,6 +103,7 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
     /**
      * @param int $id
      * @return void
+     * @throws AuthorizationException
      */
     public function delete(int $id): void
     {

@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\CreateInterface;
 use App\Repositories\Interfaces\DeleteInterface;
 use App\Repositories\Interfaces\ReadInterface;
 use App\Repositories\Interfaces\UpdateInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -19,6 +20,10 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
 {
     const CABINET_PER_PAGE = 10;
 
+    /**
+     * @param array $data
+     * @return int
+     */
     public function create(array $data): int
     {
         $data = Arr::set($data, 'user_id', auth()->id());
@@ -52,6 +57,7 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
     /**
      * @param int $id
      * @return Model
+     * @throws AuthorizationException
      */
     public function find(int $id): Model
     {
@@ -66,6 +72,7 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
      * @param array $data
      * @param int $id
      * @return void
+     * @throws AuthorizationException
      */
     public function update(array $data, int $id): void
     {
@@ -94,6 +101,7 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
     /**
      * @param int $id
      * @return void
+     * @throws AuthorizationException
      */
     public function delete(int $id): void
     {

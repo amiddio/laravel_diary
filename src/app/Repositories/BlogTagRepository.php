@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\CreateInterface;
 use App\Repositories\Interfaces\DeleteInterface;
 use App\Repositories\Interfaces\ReadInterface;
 use App\Repositories\Interfaces\UpdateInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -39,15 +40,13 @@ class BlogTagRepository extends BaseRepository implements CreateInterface, Delet
      */
     public function all(): Collection
     {
-        return BlogTag::select(['id', 'name'])
-                        ->where('user_id', auth()->id())
-                        ->orderBy('name')
-                        ->get();
+        return BlogTag::select(['id', 'name'])->owner()->orderBy('name')->get();
     }
 
     /**
      * @param int $id
      * @return mixed
+     * @throws AuthorizationException
      */
     public function find(int $id): BlogTag
     {
@@ -62,6 +61,7 @@ class BlogTagRepository extends BaseRepository implements CreateInterface, Delet
      * @param array $data
      * @param int $id
      * @return void
+     * @throws AuthorizationException
      */
     public function update(array $data, int $id): void
     {
@@ -84,6 +84,7 @@ class BlogTagRepository extends BaseRepository implements CreateInterface, Delet
     /**
      * @param int $id
      * @return void
+     * @throws AuthorizationException
      */
     public function delete(int $id): void
     {

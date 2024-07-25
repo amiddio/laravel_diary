@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $user_id
@@ -20,23 +20,23 @@ use Illuminate\Support\Str;
  * @property Carbon $published_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \App\Models\Category|null $category
+ * @property-read Category|null $category
  * @property-read mixed $intro
  * @property-read mixed $published_at_formated
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost query()
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereContent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost wherePublishedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DiaryPost whereUserId($value)
+ * @method static Builder|DiaryPost newModelQuery()
+ * @method static Builder|DiaryPost newQuery()
+ * @method static Builder|DiaryPost query()
+ * @method static Builder|DiaryPost whereCategoryId($value)
+ * @method static Builder|DiaryPost whereContent($value)
+ * @method static Builder|DiaryPost whereCreatedAt($value)
+ * @method static Builder|DiaryPost whereId($value)
+ * @method static Builder|DiaryPost wherePublishedAt($value)
+ * @method static Builder|DiaryPost whereTitle($value)
+ * @method static Builder|DiaryPost whereUpdatedAt($value)
+ * @method static Builder|DiaryPost whereUserId($value)
  * @mixin \Eloquent
  */
-class DiaryPost extends Model
+class DiaryPost extends BaseModel
 {
     use HasFactory;
 
@@ -61,22 +61,21 @@ class DiaryPost extends Model
         'published_at',
     ];
 
+    /**
+     * @return BelongsTo
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * @return Attribute
+     */
     protected function intro(): Attribute
     {
         return Attribute::make(
             get: fn () => Str::words($this->content, 15),
-        );
-    }
-
-    protected function publishedAtFormated(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => Carbon::parse($this->published_at)->format('l, jS \\of F Y, H:i'),
         );
     }
 

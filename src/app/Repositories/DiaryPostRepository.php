@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\CreateInterface;
 use App\Repositories\Interfaces\DeleteInterface;
 use App\Repositories\Interfaces\ReadInterface;
 use App\Repositories\Interfaces\UpdateInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\QueryException;
@@ -18,7 +19,6 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
 {
 
     const PER_PAGE = 10;
-
 
     /**
      * @param array $data
@@ -39,14 +39,15 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
     }
 
     /**
+     * @param string|null $slug
      * @return Collection|LengthAwarePaginator
      */
     public function all(?string $slug = null): Collection|LengthAwarePaginator
     {
         $query = DiaryPost::with(['category' => function ($q) {
-            $q->select('id', 'name', 'slug');
+                $q->select('id', 'name', 'slug');
             }])
-            ->where('user_id', auth()->id())
+            ->owner()
             ->orderByDesc('published_at');
 
         if ($slug !== null) {
@@ -61,6 +62,7 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
     /**
      * @param int $id
      * @return DiaryPost
+     * @throws AuthorizationException
      */
     public function find(int $id): DiaryPost
     {
@@ -75,6 +77,7 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
      * @param array $data
      * @param int $id
      * @return void
+     * @throws AuthorizationException
      */
     public function update(array $data, int $id): void
     {
@@ -97,6 +100,7 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
     /**
      * @param int $id
      * @return void
+     * @throws AuthorizationException
      */
     public function delete(int $id): void
     {
