@@ -27,11 +27,11 @@
             <div class="dropdown text-end">
                 @isset(auth()->user()->avatar)
                     <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ Storage::url(config('custom.path.user_avatar') . '/' . auth()->user()->avatar) }}" class="img-thumbnail" width="40" />
+                        <img src="{{ Storage::url(config('custom.path.user_avatar') . '/' . auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="img-thumbnail" width="40" />
                     </a>
                 @else
                     <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ asset('images/avatar.jpg') }}" class="img-thumbnail" width="40" />
+                        <img src="{{ asset('images/avatar.jpg') }}" alt="" class="img-thumbnail" width="40" />
                     </a>
                 @endisset
                 <ul class="dropdown-menu text-small">

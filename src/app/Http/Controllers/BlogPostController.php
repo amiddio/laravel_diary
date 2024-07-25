@@ -2,63 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\BlogPostRequest;
+use App\Repositories\BlogPostRepository;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class BlogPostController extends Controller
 {
+
+    public function __construct(
+        protected BlogPostRepository $blogPostRepository
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
-        return view('blog_posts.index');
+        $posts = $this->blogPostRepository->all();
+        return view('blog_posts.index', compact('posts'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
-        //
+        return view('blog_posts.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BlogPostRequest $request): RedirectResponse
     {
-        //
+        $validated = $request->validated();
+        $this->blogPostRepository->create($validated);
+        return redirect()->route('blog_posts.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): View
     {
-        //
+        $post = $this->blogPostRepository->find($id);
+        return view('blog_posts.show', compact('post'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): View
     {
-        //
+        $post = $this->blogPostRepository->find($id);
+        return view('blog_posts.edit', compact('post'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BlogPostRequest $request, string $id): RedirectResponse
     {
-        //
+        $validated = $request->validated();
+        $this->blogPostRepository->update($validated, $id);
+        return redirect()->route('blog_posts.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): RedirectResponse
     {
-        //
+        $this->blogPostRepository->delete($id);
+        return redirect()->route('blog_posts.index');
     }
 }
