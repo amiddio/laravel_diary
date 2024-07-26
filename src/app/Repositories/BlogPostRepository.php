@@ -2,13 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Models\BlogPost;
+use App\Models\BlogPost as Model;
 use App\Repositories\Interfaces\CreateInterface;
 use App\Repositories\Interfaces\DeleteInterface;
 use App\Repositories\Interfaces\ReadInterface;
 use App\Repositories\Interfaces\UpdateInterface;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -18,7 +17,15 @@ use Illuminate\Support\Facades\Log;
 
 class BlogPostRepository extends BaseRepository implements CreateInterface, DeleteInterface, ReadInterface, UpdateInterface
 {
-    const CABINET_PER_PAGE = 10;
+    private const CABINET_PER_PAGE = 10;
+
+    /**
+     * @return string
+     */
+    protected function getModelClass(): string
+    {
+        return Model::class;
+    }
 
     /**
      * @param array $data
@@ -30,7 +37,7 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
         $tags = Arr::get($data, 'tags', []);
 
         try {
-            $post = BlogPost::create($data);
+            $post = $this->instance()->create($data);
             if ($tags) {
                 $post->tags()->attach($tags);
             }
@@ -47,21 +54,21 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
      */
     public function all(): Collection|LengthAwarePaginator
     {
-        return BlogPost::select(['id', 'title', 'is_active', 'published_at'])
-                        ->with('tags:id,name')
-                        ->owner()
-                        ->latest()
-                        ->paginate(self::CABINET_PER_PAGE);
+        return $this->instance()->select(['id', 'title', 'is_active', 'published_at'])
+            ->with('tags:id,name')
+            ->owner()
+            ->latest()
+            ->paginate(self::CABINET_PER_PAGE);
     }
 
     /**
      * @param int $id
-     * @return Model
+     * @return \Illuminate\Database\Eloquent\Model
      * @throws AuthorizationException
      */
-    public function find(int $id): Model
+    public function find(int $id): \Illuminate\Database\Eloquent\Model
     {
-        $post = BlogPost::with('tags')->findOrFail($id);
+        $post = $this->instance()->with('tags')->findOrFail($id);
 
         Gate::authorize('view', $post);
 
@@ -76,7 +83,7 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
      */
     public function update(array $data, int $id): void
     {
-        $post = BlogPost::findOrFail($id);
+        $post = $this->instance()->findOrFail($id);
 
         Gate::authorize('update', $post);
 
@@ -105,7 +112,7 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
      */
     public function delete(int $id): void
     {
-        $post = BlogPost::findOrFail($id);
+        $post = $this->instance()->findOrFail($id);
 
         Gate::authorize('delete', $post);
 
@@ -117,4 +124,5 @@ class BlogPostRepository extends BaseRepository implements CreateInterface, Dele
             abort(500);
         }
     }
+
 }

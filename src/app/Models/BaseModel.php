@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- * 
+ *
  *
  * @method static Builder|BaseModel active()
  * @method static Builder|BaseModel newModelQuery()
@@ -45,7 +45,7 @@ class BaseModel extends Model
     protected function publishedAtFormated(): Attribute
     {
         return Attribute::make(
-            get: fn () => Carbon::parse($this->published_at)->format('l, jS \\of F Y, H:i'),
+            get: fn () => Carbon::parse($this->published_at)->format(config('custom.date_formated.general')),
         );
     }
 

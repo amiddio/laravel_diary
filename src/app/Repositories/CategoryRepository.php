@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Category;
+use App\Models\Category as Model;
 use App\Repositories\Interfaces\CreateInterface;
 use App\Repositories\Interfaces\DeleteInterface;
 use App\Repositories\Interfaces\ReadInterface;
@@ -18,6 +18,14 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
 {
 
     /**
+     * @return string
+     */
+    protected function getModelClass(): string
+    {
+        return Model::class;
+    }
+
+    /**
      * @param array $data
      * @return int
      */
@@ -26,8 +34,10 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
         $data = Arr::set($data, 'user_id', auth()->id());
 
         try {
-            $category = Category::create($data);
+            $category = $this->instance()->create($data);
+
             self::setAlert(status: 'success', message: __('Category created successfully!'));
+
             return $category->id;
         } catch (QueryException  $exception) {
             Log::error($exception->getMessage());
@@ -40,10 +50,7 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
      */
     public function all(): Collection
     {
-        return Category::select(['id', 'name', 'is_active'])
-                         ->owner()
-                         ->orderBy('name')
-                         ->get();
+        return $this->instance()->select(['id', 'name', 'is_active'])->owner()->orderBy('name')->get();
     }
 
     /**
@@ -51,11 +58,7 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
      */
     public function activedList(): array
     {
-        $rows = Category::select(['id', 'name', 'slug'])
-                          ->owner()
-                          ->active()
-                          ->orderBy('name')
-                          ->get();
+        $rows = $this->instance()->select(['id', 'name', 'slug'])->owner()->active()->orderBy('name')->get();
 
         return Arr::mapWithKeys($rows->toArray(), function (array $item, int $key) {
             return [$item['id'] => $item];
@@ -67,9 +70,9 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
      * @return mixed
      * @throws AuthorizationException
      */
-    public function find(int $id): Category
+    public function find(int $id): Model
     {
-        $category = Category::findOrFail($id);
+        $category = $this->instance()->findOrFail($id);
 
         Gate::authorize('view', $category);
 
@@ -84,7 +87,7 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
      */
     public function update(array $data, int $id): void
     {
-        $category = Category::findOrFail($id);
+        $category = $this->instance()->findOrFail($id);
 
         Gate::authorize('update', $category);
 
@@ -107,7 +110,7 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
      */
     public function delete(int $id): void
     {
-        $category = Category::findOrFail($id);
+        $category = $this->instance()->findOrFail($id);
 
         Gate::authorize('delete', $category);
 

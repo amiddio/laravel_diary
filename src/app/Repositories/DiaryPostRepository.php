@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\DiaryPost;
+use App\Models\DiaryPost as Model;
 use App\Repositories\Interfaces\CreateInterface;
 use App\Repositories\Interfaces\DeleteInterface;
 use App\Repositories\Interfaces\ReadInterface;
@@ -18,7 +18,15 @@ use Illuminate\Support\Facades\Log;
 class DiaryPostRepository extends BaseRepository implements CreateInterface, ReadInterface, UpdateInterface, DeleteInterface
 {
 
-    const PER_PAGE = 10;
+    private const PER_PAGE = 10;
+
+    /**
+     * @return string
+     */
+    protected function getModelClass(): string
+    {
+        return Model::class;
+    }
 
     /**
      * @param array $data
@@ -29,7 +37,7 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
         $data = Arr::set($data, 'user_id', auth()->id());
 
         try {
-            $post = DiaryPost::create($data);
+            $post = $this->instance()->create($data);
             self::setAlert(status: 'success', message: __('Post created successfully!'));
             return $post->id;
         } catch (QueryException  $exception) {
@@ -44,14 +52,15 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
      */
     public function all(?string $slug = null): Collection|LengthAwarePaginator
     {
-        $query = DiaryPost::with(['category' => function ($q) {
+        $query = $this->instance()
+            ->with(['category' => function ($q) {
                 $q->select('id', 'name', 'slug');
             }])
             ->owner()
             ->orderByDesc('published_at');
 
         if ($slug !== null) {
-            $query = $query->whereHas('category', function($q) use ($slug) {
+            $query = $query->whereHas('category', function ($q) use ($slug) {
                 $q->where('slug', $slug);
             });
         }
@@ -61,12 +70,12 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
 
     /**
      * @param int $id
-     * @return DiaryPost
+     * @return Model
      * @throws AuthorizationException
      */
-    public function find(int $id): DiaryPost
+    public function find(int $id): Model
     {
-        $post = DiaryPost::findOrFail($id);
+        $post = $this->instance()->findOrFail($id);
 
         Gate::authorize('view', $post);
 
@@ -81,7 +90,7 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
      */
     public function update(array $data, int $id): void
     {
-        $post = DiaryPost::findOrFail($id);
+        $post = $this->instance()->findOrFail($id);
 
         Gate::authorize('update', $post);
 
@@ -104,7 +113,7 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
      */
     public function delete(int $id): void
     {
-        $post = DiaryPost::findOrFail($id);
+        $post = $this->instance()->findOrFail($id);
 
         Gate::authorize('delete', $post);
 
@@ -116,4 +125,5 @@ class DiaryPostRepository extends BaseRepository implements CreateInterface, Rea
             abort(500);
         }
     }
+
 }

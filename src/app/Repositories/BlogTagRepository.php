@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\BlogTag;
+use App\Models\BlogTag as Model;
 use App\Repositories\Interfaces\CreateInterface;
 use App\Repositories\Interfaces\DeleteInterface;
 use App\Repositories\Interfaces\ReadInterface;
@@ -18,6 +18,14 @@ class BlogTagRepository extends BaseRepository implements CreateInterface, Delet
 {
 
     /**
+     * @return string
+     */
+    protected function getModelClass(): string
+    {
+        return Model::class;
+    }
+
+    /**
      * @param array $data
      * @return int
      */
@@ -26,7 +34,7 @@ class BlogTagRepository extends BaseRepository implements CreateInterface, Delet
         $data = Arr::set($data, 'user_id', auth()->id());
 
         try {
-            $tag = BlogTag::create($data);
+            $tag = $this->instance()->create($data);
             self::setAlert(status: 'success', message: __('Tag created successfully!'));
             return $tag->id;
         } catch (QueryException  $exception) {
@@ -40,17 +48,17 @@ class BlogTagRepository extends BaseRepository implements CreateInterface, Delet
      */
     public function all(): Collection
     {
-        return BlogTag::select(['id', 'name'])->owner()->orderBy('name')->get();
+        return $this->instance()->select(['id', 'name'])->owner()->orderBy('name')->get();
     }
 
     /**
      * @param int $id
-     * @return mixed
+     * @return Model
      * @throws AuthorizationException
      */
-    public function find(int $id): BlogTag
+    public function find(int $id): Model
     {
-        $tag = BlogTag::findOrFail($id);
+        $tag = $this->instance()->findOrFail($id);
 
         Gate::authorize('view', $tag);
 
@@ -65,7 +73,7 @@ class BlogTagRepository extends BaseRepository implements CreateInterface, Delet
      */
     public function update(array $data, int $id): void
     {
-        $tag = BlogTag::findOrFail($id);
+        $tag = $this->instance()->findOrFail($id);
 
         Gate::authorize('update', $tag);
 
@@ -88,7 +96,7 @@ class BlogTagRepository extends BaseRepository implements CreateInterface, Delet
      */
     public function delete(int $id): void
     {
-        $tag = BlogTag::findOrFail($id);
+        $tag = $this->instance()->findOrFail($id);
 
         Gate::authorize('delete', $tag);
 

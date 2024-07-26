@@ -2,8 +2,25 @@
 
 namespace App\Repositories;
 
-class BaseRepository
+use Illuminate\Database\Eloquent\Model;
+
+abstract class BaseRepository
 {
+
+    /**
+     * @var Model
+     */
+    private Model $model;
+
+    public function __construct()
+    {
+        $this->model = app($this->getModelClass());
+    }
+
+    /**
+     * @return string
+     */
+    abstract protected function getModelClass(): string;
 
     /**
      * @param string $status
@@ -15,4 +32,13 @@ class BaseRepository
         request()->session()->flash('status', $status);
         request()->session()->flash('message', $message);
     }
+
+    /**
+     * @return Model
+     */
+    protected function instance(): Model
+    {
+        return $this->model;
+    }
+
 }
