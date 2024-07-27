@@ -3,18 +3,12 @@
 namespace App\Repositories;
 
 use App\Models\Category as Model;
-use App\Repositories\Interfaces\CreateInterface;
-use App\Repositories\Interfaces\DeleteInterface;
-use App\Repositories\Interfaces\ReadInterface;
-use App\Repositories\Interfaces\UpdateInterface;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
-class CategoryRepository extends BaseRepository implements CreateInterface, ReadInterface, UpdateInterface, DeleteInterface
+class CategoryRepository extends BaseCrudRepository
 {
 
     /**
@@ -31,13 +25,10 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
      */
     public function create(array $data): int
     {
-        $data = Arr::set($data, 'user_id', auth()->id());
+        Arr::set($data, 'user_id', auth()->id());
 
         try {
             $category = $this->instance()->create($data);
-
-            self::setAlert(status: 'success', message: __('Category created successfully!'));
-
             return $category->id;
         } catch (QueryException  $exception) {
             Log::error($exception->getMessage());
@@ -50,77 +41,37 @@ class CategoryRepository extends BaseRepository implements CreateInterface, Read
      */
     public function all(): Collection
     {
-        return $this->instance()->select(['id', 'name', 'is_active'])->owner()->orderBy('name')->get();
+        $columns = ['id', 'name', 'is_active'];
+
+        $categories = $this->instance()
+            ->select($columns)
+            ->owner()
+            ->orderBy('name')
+            ->toBase()
+            ->get();
+
+        return $categories;
     }
 
     /**
      * @return array
      */
-    public function activedList(): array
+    public function activeList(): array
     {
-        $rows = $this->instance()->select(['id', 'name', 'slug'])->owner()->active()->orderBy('name')->get();
+        $columns = ['id', 'name', 'slug'];
 
-        return Arr::mapWithKeys($rows->toArray(), function (array $item, int $key) {
+        $categories = $this->instance()
+            ->select($columns)
+            ->owner()
+            ->active()
+            ->orderBy('name')
+            ->get();
+
+        $categories = Arr::mapWithKeys($categories->toArray(), function (array $item, int $key) {
             return [$item['id'] => $item];
         });
-    }
 
-    /**
-     * @param int $id
-     * @return mixed
-     * @throws AuthorizationException
-     */
-    public function find(int $id): Model
-    {
-        $category = $this->instance()->findOrFail($id);
-
-        Gate::authorize('view', $category);
-
-        return $category;
-    }
-
-    /**
-     * @param array $data
-     * @param int $id
-     * @return void
-     * @throws AuthorizationException
-     */
-    public function update(array $data, int $id): void
-    {
-        $category = $this->instance()->findOrFail($id);
-
-        Gate::authorize('update', $category);
-
-        try {
-            $category->fill($data);
-            $category->save();
-            if ($category->wasChanged()) {
-                self::setAlert(status: 'success', message: __('Category edited successfully!'));
-            }
-        } catch (QueryException $exception) {
-            Log::error($exception->getMessage());
-            abort(500);
-        }
-    }
-
-    /**
-     * @param int $id
-     * @return void
-     * @throws AuthorizationException
-     */
-    public function delete(int $id): void
-    {
-        $category = $this->instance()->findOrFail($id);
-
-        Gate::authorize('delete', $category);
-
-        try {
-            $category->delete();
-            self::setAlert(status: 'success', message: __('Category was deleted!'));
-        } catch (QueryException $exception) {
-            Log::error($exception->getMessage());
-            abort(500);
-        }
+        return $categories;
     }
 
 }

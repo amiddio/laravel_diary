@@ -7,6 +7,7 @@ use App\Repositories\CategoryRepository;
 use App\Repositories\DiaryPostRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class DiaryPostController extends Controller
 {
@@ -24,6 +25,7 @@ class DiaryPostController extends Controller
     public function index(): View
     {
         $posts = $this->diaryPostRepository->all();
+
         return view('diary_posts.index', compact('posts'));
     }
 
@@ -34,6 +36,7 @@ class DiaryPostController extends Controller
     public function filtered(string $slug): View
     {
         $posts = $this->diaryPostRepository->all(slug: $slug);
+
         return view('diary_posts.index', compact('posts'));
     }
 
@@ -51,7 +54,12 @@ class DiaryPostController extends Controller
     public function store(DiaryPostRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $this->diaryPostRepository->create(data: $validated);
+
+        $result = $this->diaryPostRepository->create(data: $validated);
+        if ($result) {
+            self::setAlert(status: 'success', message: __('Post created successfully!'));
+        }
+
         return redirect()->route('diary_posts.index');
     }
 
@@ -61,6 +69,12 @@ class DiaryPostController extends Controller
     public function show(string $id): View
     {
         $post = $this->diaryPostRepository->find($id);
+        if (!$post) {
+            abort(404);
+        }
+
+        Gate::authorize('view', $post);
+
         return view('diary_posts.show', compact('post'));
     }
 
@@ -70,6 +84,12 @@ class DiaryPostController extends Controller
     public function edit(string $id): View
     {
         $post = $this->diaryPostRepository->find($id);
+        if (!$post) {
+            abort(404);
+        }
+
+        Gate::authorize('view', $post);
+
         return view('diary_posts.edit', compact('post'));
     }
 
@@ -78,8 +98,19 @@ class DiaryPostController extends Controller
      */
     public function update(DiaryPostRequest $request, string $id): RedirectResponse
     {
+        $post = $this->diaryPostRepository->find($id);
+        if (!$post) {
+            abort(404);
+        }
+
+        Gate::authorize('update', $post);
+
         $validated = $request->validated();
-        $this->diaryPostRepository->update($validated, $id);
+        $post = $this->diaryPostRepository->update($post, $validated);
+        if ($post->wasChanged()) {
+            self::setAlert(status: 'success', message: __('Post edited successfully!'));
+        }
+
         return redirect()->route('diary_posts.index');
     }
 
@@ -88,7 +119,17 @@ class DiaryPostController extends Controller
      */
     public function destroy(string $id): RedirectResponse
     {
-        $this->diaryPostRepository->delete($id);
+        $post = $this->diaryPostRepository->find($id);
+        if (!$post) {
+            abort(404);
+        }
+
+        Gate::authorize('delete', $post);
+
+        if ($this->diaryPostRepository->delete($post)) {
+            self::setAlert(status: 'success', message: __('Post was deleted!'));
+        }
+
         return redirect()->route('diary_posts.index');
     }
 }

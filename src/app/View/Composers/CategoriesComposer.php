@@ -14,6 +14,6 @@ class CategoriesComposer
 
     public function compose(View $view): void
     {
-        $view->with('categories', $this->categoryRepository->activedList());
+        $view->with('categories', $this->categoryRepository->activeList());
     }
 }

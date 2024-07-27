@@ -2,7 +2,9 @@
 
 namespace App\Repositories\Interfaces;
 
+use Illuminate\Database\Eloquent\Model;
+
 interface DeleteInterface
 {
-    public function delete(int $id): void;
+    public function delete(Model $instance): ?bool;
 }

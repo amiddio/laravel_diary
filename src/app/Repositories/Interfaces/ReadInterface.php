@@ -10,5 +10,5 @@ interface ReadInterface
 {
     public function all(): Collection|LengthAwarePaginator;
 
-    public function find(int $id): Model;
+    public function find(int $id): ?Model;
 }

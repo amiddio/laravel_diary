@@ -7,6 +7,7 @@ use App\Repositories\BlogPostRepository;
 use App\Repositories\BlogTagRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 class BlogPostController extends Controller
 {
@@ -31,6 +32,7 @@ class BlogPostController extends Controller
     public function create(): View
     {
         $tags = $this->blogTagRepository->all();
+
         return view('blog_posts.create', compact('tags'));
     }
 
@@ -40,7 +42,12 @@ class BlogPostController extends Controller
     public function store(BlogPostRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $this->blogPostRepository->create($validated);
+
+        $result = $this->blogPostRepository->create($validated);
+        if ($result) {
+            self::setAlert(status: 'success', message: __('Blog post created successfully!'));
+        }
+
         return redirect()->route('blog_posts.index');
     }
 
@@ -50,6 +57,12 @@ class BlogPostController extends Controller
     public function show(string $id): View
     {
         $post = $this->blogPostRepository->find($id);
+        if (!$post) {
+            abort(404);
+        }
+
+        Gate::authorize('view', $post);
+
         return view('blog_posts.show', compact('post'));
     }
 
@@ -59,7 +72,14 @@ class BlogPostController extends Controller
     public function edit(string $id): View
     {
         $post = $this->blogPostRepository->find($id);
+        if (!$post) {
+            abort(404);
+        }
+
+        Gate::authorize('view', $post);
+
         $tags = $this->blogTagRepository->all();
+
         return view('blog_posts.edit', compact('post', 'tags'));
     }
 
@@ -68,8 +88,19 @@ class BlogPostController extends Controller
      */
     public function update(BlogPostRequest $request, string $id): RedirectResponse
     {
+        $post = $this->blogPostRepository->find($id);
+        if (!$post) {
+            abort(404);
+        }
+
+        Gate::authorize('update', $post);
+
         $validated = $request->validated();
-        $this->blogPostRepository->update($validated, $id);
+        $post = $this->blogPostRepository->update(post: $post, data: $validated);
+        if ($post->wasChanged() || $post->getAttribute('is_tags_changed')) {
+            self::setAlert(status: 'success', message: __('Blog post edited successfully!'));
+        }
+
         return redirect()->route('blog_posts.index');
     }
 
@@ -78,7 +109,16 @@ class BlogPostController extends Controller
      */
     public function destroy(string $id): RedirectResponse
     {
-        $this->blogPostRepository->delete($id);
+        $post = $this->blogPostRepository->find($id);
+        if (!$post) {
+            abort(404);
+        }
+
+        Gate::authorize('delete', $post);
+
+        if ($this->blogPostRepository->delete($post)) {
+            self::setAlert(status: 'success', message: __('Post was deleted!'));
+        }
         return redirect()->route('blog_posts.index');
     }
 }

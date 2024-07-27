@@ -2,7 +2,9 @@
 
 namespace App\Repositories\Interfaces;
 
+use Illuminate\Database\Eloquent\Model;
+
 interface UpdateInterface
 {
-    public function update(array $data, int $id): void;
+    public function update(Model $instance, array $data): Model;
 }
