@@ -2,7 +2,7 @@
 
 namespace App\View\Composers;
 
-use App\Repositories\CategoryRepository;
+use App\Repositories\Cabinet\CategoryRepository;
 use Illuminate\View\View;
 
 class CategoriesComposer

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
+
     public function index(): View
     {
         return view('contact.index');

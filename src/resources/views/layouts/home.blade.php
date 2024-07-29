@@ -28,7 +28,7 @@
                             <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ route('home') }}">{{ __('Home') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('blog') ? 'active' : '' }}" href="#">{{ __('Blog') }}</a>
+                            <a class="nav-link {{ request()->is('blog') ? 'active' : '' }}" href="{{ route('list.published.posts') }}">{{ __('Blog') }}</a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('contact.index') }}" class="nav-link {{ request()->is('contact') ? 'active' : '' }}">{{ __('Contact') }}</a>
@@ -38,7 +38,7 @@
                     @if (Route::has('login'))
                         @auth
                             <li class="nav-item">
-                            <a href="{{ route('dashboard') }}" class="nav-link">{{ __('Dashboard') }}</a>
+                            <a href="{{ route('dashboard') }}" class="nav-link">{{ __('Cabinet') }}</a>
                             </li>
                         @else
                             <li class="nav-item">

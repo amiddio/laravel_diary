@@ -27,9 +27,15 @@ class AppServiceProvider extends ServiceProvider
 
         // Added copyright to all blade templates
         $current_year = date('Y');
-        View::share('copyright', __("&copy; Copyright :years Crocus Studio", ['years' => ($current_year == 2024 ? $current_year : "2024-{$current_year}")]));
+        View::share(
+            'copyright', __("&copy; Copyright :years Crocus Studio",
+            ['years' => ($current_year == 2024 ? $current_year : "2024-{$current_year}")])
+        );
 
         // Share categories
-        View::composer(['diary_posts.index', 'diary_posts.create', 'diary_posts.edit'], CategoriesComposer::class);
+        View::composer(
+            ['cabinet.diary_posts.index', 'cabinet.diary_posts.create', 'cabinet.diary_posts.edit'],
+            CategoriesComposer::class
+        );
     }
 }

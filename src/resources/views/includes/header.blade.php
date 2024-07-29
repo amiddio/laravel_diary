@@ -11,16 +11,16 @@
                     <a href="{{ route('home') }}" class="nav-link px-2 link-body-emphasis">{{ __('Home') }}</a>
                 </li>
                 <li>
-                    <a href="{{ route('dashboard') }}"
-                       class="nav-link px-2 {{ request()->is('dashboard') ? 'link-secondary' : 'link-body-emphasis' }}">{{ __('Dashboard') }}</a>
+                    <a href="{{ route('cabinet.dashboard') }}"
+                       class="nav-link px-2 {{ request()->is('cabinet/dashboard') ? 'link-secondary' : 'link-body-emphasis' }}">{{ __('Dashboard') }}</a>
                 </li>
                 <li>
-                    <a href="{{ route('diary_posts.index') }}"
-                       class="nav-link px-2 {{ request()->is('diary_*', 'categories*') ? 'link-secondary' : 'link-body-emphasis' }}">{{ __('Diary') }}</a>
+                    <a href="{{ route('cabinet.diary_posts.index') }}"
+                       class="nav-link px-2 {{ request()->is('cabinet/diary_*', 'cabinet/categories*') ? 'link-secondary' : 'link-body-emphasis' }}">{{ __('Diary') }}</a>
                 </li>
                 <li>
-                    <a href="{{ route('blog_posts.index') }}"
-                       class="nav-link px-2 {{ request()->is('blog_*') ? 'link-secondary' : 'link-body-emphasis' }}">{{ __('Blog') }}</a>
+                    <a href="{{ route('cabinet.blog_posts.index') }}"
+                       class="nav-link px-2 {{ request()->is('cabinet/blog_*') ? 'link-secondary' : 'link-body-emphasis' }}">{{ __('Blog') }}</a>
                 </li>
             </ul>
 
@@ -35,7 +35,7 @@
                     </a>
                 @endisset
                 <ul class="dropdown-menu text-small">
-                    <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
+                    <li><a class="dropdown-item" href="{{ route('cabinet.profile.edit') }}">Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li class="ps-3">
                         <form method="POST" action="{{ route('logout') }}">
