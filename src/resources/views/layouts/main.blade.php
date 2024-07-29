@@ -16,7 +16,7 @@
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
             <div class="container-fluid">
-                <a href="{{ route('home') }}" class="navbar-brand">
+                <a href="{{ route('dashboard') }}" class="navbar-brand">
                     <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" title="{{ config('app.name') }}" width="30" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,10 +25,10 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav me-auto mb-2 mb-md-0">
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ route('home') }}">{{ __('Home') }}</a>
+                            <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ route('dashboard') }}">{{ __('Home') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('blog') ? 'active' : '' }}" href="{{ route('list.published.posts') }}">{{ __('Blog') }}</a>
+                            <a class="nav-link {{ request()->is('blog') ? 'active' : '' }}" href="{{ route('blog.index') }}">{{ __('Blog') }}</a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('contact.index') }}" class="nav-link {{ request()->is('contact') ? 'active' : '' }}">{{ __('Contact') }}</a>
@@ -38,7 +38,7 @@
                     @if (Route::has('login'))
                         @auth
                             <li class="nav-item">
-                            <a href="{{ route('dashboard') }}" class="nav-link">{{ __('Cabinet') }}</a>
+                            <a href="{{ route('cabinet.dashboard') }}" class="nav-link">{{ __('Cabinet') }}</a>
                             </li>
                         @else
                             <li class="nav-item">

@@ -1,12 +1,14 @@
 <?php
 
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Cabinet\BlogPostController;
 use App\Http\Controllers\Cabinet\BlogTagController;
 use App\Http\Controllers\Cabinet\CategoryController;
-use App\Http\Controllers\Cabinet\DashboardController;
+use App\Http\Controllers\Cabinet\DashboardController as CabinetDashboardController;
 use App\Http\Controllers\Cabinet\DiaryPostController;
 use App\Http\Controllers\Cabinet\ProfileController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,18 +22,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::prefix('/')->group(function () {
 
-Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
-Route::get('/blog', [BlogPostController::class, 'listPublishedPost'])->name('list.published.posts');
-Route::get('/blog/{user_id}/{slug:slug}', [BlogPostController::class, 'showPublishedPost'])->name('show.published.post');
+    Route::get('/', DashboardController::class)->name('dashboard');
+
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+    Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+
+    Route::get('/blog/{tag_name?}', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/blog/{user_id}/{slug:slug}', [BlogController::class, 'show'])->name('blog.show');
+});
 
 Route::prefix('cabinet')->name('cabinet.')->middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/dashboard', CabinetDashboardController::class)->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

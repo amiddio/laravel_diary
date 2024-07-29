@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cabinet;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BlogPostRequest;
-use App\Repositories\BlogRepository;
 use App\Repositories\Cabinet\BlogPostRepository;
 use App\Repositories\Cabinet\BlogTagRepository;
 use Illuminate\Contracts\View\View;
@@ -124,19 +123,4 @@ class BlogPostController extends Controller
         return redirect()->route('cabinet.blog_posts.index');
     }
 
-//    /**
-//     * @param BlogRepository $blogRepository
-//     * @return View
-//     */
-//    public function listPublishedPost(BlogRepository $blogRepository): View
-//    {
-//        $posts = $blogRepository->all();
-//        return view('blog_posts.list_published_post', compact('posts'));
-//    }
-//
-//    public function showPublishedPost(string $user_id, string $slug, BlogRepository $blogRepository): View
-//    {
-//        $post = $blogRepository->get(user_id: $user_id, slug: $slug);
-//        return view('blog_posts.detail', compact('post'));
-//    }
 }

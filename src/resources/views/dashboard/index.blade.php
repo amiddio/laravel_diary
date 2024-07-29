@@ -1,4 +1,4 @@
-<x-home-layout>
+<x-main-layout>
     <x-slot name="page_title">{{ __('Home Page') }}</x-slot>
 
     <x-slot name="content">
@@ -7,4 +7,4 @@
         </div>
     </x-slot>
 
-</x-home-layout>
+</x-main-layout>

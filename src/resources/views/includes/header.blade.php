@@ -2,13 +2,13 @@
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 
-            <a href="{{ route('home') }}" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+            <a href="{{ route('dashboard') }}" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
                 <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" title="{{ config('app.name') }}" width="30" />
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-3">
                 <li>
-                    <a href="{{ route('home') }}" class="nav-link px-2 link-body-emphasis">{{ __('Home') }}</a>
+                    <a href="{{ route('dashboard') }}" class="nav-link px-2 link-body-emphasis">{{ __('Home') }}</a>
                 </li>
                 <li>
                     <a href="{{ route('cabinet.dashboard') }}"
