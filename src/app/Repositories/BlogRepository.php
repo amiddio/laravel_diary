@@ -28,7 +28,7 @@ class BlogRepository extends BaseRepository
         $posts = $this->instance()
             ->select($columns)
             ->with(['tags:id,name', 'user:id,name'])
-            ->whereHas('tags', function ($query) use ($tag_name) {
+            ->whereHas('tags', function (Builder $query) use ($tag_name) {
                 if ($tag_name) {
                     $query->where('name', $tag_name);
                 }

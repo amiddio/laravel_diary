@@ -7,6 +7,7 @@ use App\Http\Controllers\Cabinet\CategoryController;
 use App\Http\Controllers\Cabinet\DashboardController as CabinetDashboardController;
 use App\Http\Controllers\Cabinet\DiaryPostController;
 use App\Http\Controllers\Cabinet\ProfileController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,8 @@ Route::prefix('/')->group(function () {
 
     Route::get('/blog/{tag_name?}', [BlogController::class, 'index'])->name('blog.index');
     Route::get('/blog/{user_id}/{slug:slug}', [BlogController::class, 'show'])->name('blog.show');
+
+    Route::post('/comments', [CommentController::class, 'store'])->middleware('auth')->name('comment.store');
 });
 
 Route::prefix('cabinet')->name('cabinet.')->middleware(['auth', 'verified'])->group(function () {

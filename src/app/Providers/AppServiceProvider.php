@@ -6,6 +6,7 @@ use App\View\Composers\CategoriesComposer;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,5 +38,9 @@ class AppServiceProvider extends ServiceProvider
             ['cabinet.diary_posts.index', 'cabinet.diary_posts.create', 'cabinet.diary_posts.edit'],
             CategoriesComposer::class
         );
+
+        Relation::enforceMorphMap([
+            'blog' => 'App\Models\BlogPost',
+        ]);
     }
 }

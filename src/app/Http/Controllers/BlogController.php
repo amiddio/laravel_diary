@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\BlogRepository;
-use Illuminate\Http\Request;
+use App\Repositories\CommentRepository;
 use Illuminate\View\View;
 
 class BlogController extends Controller
 {
+    /**
+     * @param BlogRepository $blogRepository
+     * @param CommentRepository $commentRepository
+     */
     public function __construct(
-        protected BlogRepository $blogRepository
+        protected BlogRepository $blogRepository,
+        protected CommentRepository $commentRepository
     ) {}
 
     /**
@@ -35,7 +40,9 @@ class BlogController extends Controller
             abort(404);
         }
 
-        return view('blog.detail', compact('post'));
+        $comments = $this->commentRepository->all(post_id: $post->id);
+
+        return view('blog.detail', compact('post', 'comments'));
     }
 
 }
