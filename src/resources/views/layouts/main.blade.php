@@ -28,7 +28,7 @@
                             <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ route('dashboard') }}">{{ __('Home') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('blog') ? 'active' : '' }}" href="{{ route('blog.index') }}">{{ __('Blog') }}</a>
+                            <a class="nav-link {{ request()->is('blog*') ? 'active' : '' }}" href="{{ route('blog.index') }}">{{ __('Blog') }}</a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('contact.index') }}" class="nav-link {{ request()->is('contact') ? 'active' : '' }}">{{ __('Contact') }}</a>

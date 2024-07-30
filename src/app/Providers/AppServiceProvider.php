@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\BlogPost;
+use App\Models\LikeDislike;
 use App\View\Composers\CategoriesComposer;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
@@ -40,7 +42,8 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Relation::enforceMorphMap([
-            'blog' => 'App\Models\BlogPost',
+            'blog_comment' => BlogPost::class,
+            'blog_likedislike' => BlogPost::class,
         ]);
     }
 }

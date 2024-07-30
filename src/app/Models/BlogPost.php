@@ -96,6 +96,11 @@ class BlogPost extends BaseModel
         return $this->morphMany(Comment::class, 'commentable');
     }
 
+    public function likeDislike(): MorphMany
+    {
+        return $this->morphMany(LikeDislike::class, 'likedislikeable');
+    }
+
     /**
      * @return void
      */

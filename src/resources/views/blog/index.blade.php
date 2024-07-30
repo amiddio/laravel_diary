@@ -20,6 +20,9 @@
                                     <a href="{{ route('blog.index', $tag->name) }}">#{{ $tag->name }}</a>
                                 @endforeach
                             </div>
+                            @if($post->comments_count)
+                            <div>{{ __('Comments:') }} <a href="{{ route('blog.show', [$post->user_id, $post->slug]) }}#comments">{{ $post->comments_count }}</a></div>
+                            @endif
                         </p>
                     </div>
                 </div>

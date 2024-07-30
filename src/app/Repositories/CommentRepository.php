@@ -12,8 +12,6 @@ class CommentRepository extends BaseRepository implements Interfaces\CreateInter
 {
     private const PER_PAGE = 10;
 
-    private const COMMENTABLE_TYPE = 'blog';
-
     /**
      * @inheritDoc
      */
@@ -29,7 +27,6 @@ class CommentRepository extends BaseRepository implements Interfaces\CreateInter
     public function create(array $data): int
     {
         Arr::set($data, 'user_id', auth()->id());
-        Arr::set($data, 'commentable_type', self::COMMENTABLE_TYPE);
 
         try {
             $comment = $this->instance()->create($data);
@@ -44,14 +41,14 @@ class CommentRepository extends BaseRepository implements Interfaces\CreateInter
      * @param int $post_id
      * @return LengthAwarePaginator
      */
-    public function all(int $post_id): LengthAwarePaginator
+    public function all(int $post_id, string $commentable_type): LengthAwarePaginator
     {
         $columns = ['id', 'user_id', 'commentable_id', 'content', 'created_at'];
 
         $comments = $this->instance()
             ->select($columns)
             ->with(['user:id,name'])
-            ->where('commentable_type', self::COMMENTABLE_TYPE)
+            ->where('commentable_type', $commentable_type)
             ->where('commentable_id', $post_id)
             ->orderByDesc('created_at')
             ->paginate(self::PER_PAGE);

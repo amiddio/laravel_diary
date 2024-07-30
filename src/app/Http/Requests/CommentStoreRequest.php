@@ -23,7 +23,8 @@ class CommentStoreRequest extends FormRequest
     {
         return [
             'content' => ['required', 'string', 'max:1000'],
-            'commentable_id' => ['required', 'integer', 'exists:blog_posts,id'],
+            'commentable_id' => ['required', 'integer', 'exists:App\Models\BlogPost,id'],
+            'commentable_type' => ['required', 'string', 'in:blog_comment'],
         ];
     }
 

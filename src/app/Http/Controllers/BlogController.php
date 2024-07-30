@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\BlogRepository;
 use App\Repositories\CommentRepository;
+use App\Repositories\LikeDislikeRepository;
 use Illuminate\View\View;
 
 class BlogController extends Controller
@@ -11,10 +12,12 @@ class BlogController extends Controller
     /**
      * @param BlogRepository $blogRepository
      * @param CommentRepository $commentRepository
+     * @param LikeDislikeRepository $likeDislikeRepository
      */
     public function __construct(
         protected BlogRepository $blogRepository,
-        protected CommentRepository $commentRepository
+        protected CommentRepository $commentRepository,
+        protected LikeDislikeRepository $likeDislikeRepository
     ) {}
 
     /**
@@ -24,6 +27,9 @@ class BlogController extends Controller
     public function index(?string $tag_name = null): View
     {
         $posts = $this->blogRepository->list(tag_name: $tag_name);
+
+//        $r = $posts[0]->comments()->count();
+//        dump($r);
 
         return view('blog.index', compact('posts'));
     }
@@ -40,9 +46,10 @@ class BlogController extends Controller
             abort(404);
         }
 
-        $comments = $this->commentRepository->all(post_id: $post->id);
+        $comments = $this->commentRepository->all(post_id: $post->id, commentable_type: 'blog_comment');
+        $likeDislike = $this->likeDislikeRepository->getVotes(modelType: 'blog_likedislike', modelId: $post->id);
 
-        return view('blog.detail', compact('post', 'comments'));
+        return view('blog.detail', compact('post', 'comments', 'likeDislike'));
     }
 
 }

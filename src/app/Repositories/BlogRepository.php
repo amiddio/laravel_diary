@@ -33,6 +33,7 @@ class BlogRepository extends BaseRepository
                     $query->where('name', $tag_name);
                 }
             })
+            ->withCount('comments')
             ->active()
             ->orderByDesc('published_at')
             ->paginate(self::PER_PAGE);

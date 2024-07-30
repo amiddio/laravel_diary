@@ -10,6 +10,7 @@ use App\Http\Controllers\Cabinet\ProfileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LikeDislikeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +35,8 @@ Route::prefix('/')->group(function () {
     Route::get('/blog/{user_id}/{slug:slug}', [BlogController::class, 'show'])->name('blog.show');
 
     Route::post('/comments', [CommentController::class, 'store'])->middleware('auth')->name('comment.store');
+
+    Route::post('/like_dislike', LikeDislikeController::class)->middleware('auth')->name('like_dislike');
 });
 
 Route::prefix('cabinet')->name('cabinet.')->middleware(['auth', 'verified'])->group(function () {
