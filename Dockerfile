@@ -15,7 +15,9 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
 RUN apt update && apt upgrade -y \
     git \
     curl \
-    mc
+    mc \
+    nodejs \
+    npm
 
 RUN docker-php-ext-install bcmath mysqli pdo_mysql \
                             && pecl install redis \
